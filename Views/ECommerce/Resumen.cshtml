@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Ecommerce_2024_1_NJD.Models.Producto>
+
+@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Carrito";
+}
+
+@{
+    //Habilitar footer
+    ViewData["Footer"] = "Si";
+}
+
+
+<div class="w-100">
+
+    <style>
+        body {
+            background-color: #EEEEEE;
+        }
+    </style>
+
+    @if (Model.Any())
+    {
+
+
+    <div class="mx-auto " style="width: 1000px;">
+
+        <div class="px-2 py-3">
+            <a asp-action="Portal" class="btn btn-dark fw-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                </svg>&nbsp;Seguir comprando
+            </a>
+        </div>
+
+        <!--Tener cuidado con estos dos-->
+
+        <hr class="my-2">
+
+        <div class="mx-auto px-3 py-2 bg-dark rounded-3" style="width: calc(100% - 1rem);box-shadow: rgba(0, 0, 0, 0.24) 0px 0px 0px">
+            <p style="text-transform:uppercase;" class="mb-0 fw-bold fs-3 text-light text-center rounded-4">Tu carro de la compra</p>
+        </div>
+
+
+        <!--DIV PRODUCTOS-->
+        <div class="d-flex">
+            <div class="col-8 py-3 px-2">
+
+                @foreach (var item in Model)
+                {
+                    <!--Producto-->
+                    <div style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;" class="bg-white rounded-4 d-flex p-3 mt-0 mb-4">
+                        <div class="w-35">
+                            <img class="p-2 bg-dark rounded" style="width: 200px; height: 200px;" src="@Url.Action("ObtenerImagen", "Producto", new { id = item.IdProducto })" alt="Imagen del Producto" />
+                        </div>
+
+                        <div class="w-65">
+                            <p style="word-wrap:break-word" class="fw-bold fs-4 my-0">
+                                @Html.DisplayFor(modelItem => item.Nombre)
+                            </p>
+                            <hr class="my-2">
+
+                            @{
+                                decimal total = item.Precio * item.cantidad;
+                            }
+
+                            <p style="word-wrap:break-word" class="my-3">
+                                @Html.DisplayFor(modelItem => item.cantidad)&nbsp;unidades&nbsp;x&nbsp;S/&nbsp;@Html.DisplayFor(modelItem => item.Precio)
+                            </p>
+                            <p style="word-wrap:break-word" class="text-end fw-bold fs-4">
+                                S/&nbsp;@total
+                            </p>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-end">
+                                <!-- POR SI QUIERO AGREGAR MAS BOTONES
+                                <a class="d-block text-dark" href="">Btnrandom</a>
+                                &nbsp;|&nbsp;
+                                -->
+                                @Html.ActionLink("Eliminar", "Delete", new { id = item.IdProducto, q = item.cantidad }, new { @class = "d-block text-dark" })
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <!--DIV TOTAL-->
+            <div class="col-4 py-3 px-2">
+                <div style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;" class="bg-white rounded p-3">
+                    <div class="">
+                        <p class="fw-bold fs-5 my-0">Total estimado</p>
+                        <hr class="my-2">
+                        <p style="word-wrap:break-word" class="text-end fw-bold fs-4">
+                            S/&nbsp;@Model.Sum(c => c.monto)
+                        </p>
+
+                        <div class="text-center">
+                            <a asp-action="Comprar" style="border-radius: 4px;" class="fw-bold btn btn-dark w-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket" viewBox="0 0 16 16">
+                                    <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9zM1 7v1h14V7zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5" />
+                                </svg>
+                                &nbsp;
+                                Continuar compra
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+    }
+    else
+    {
+        <div class="mx-auto rounded-2 p-3 mt-4 mb-4 bg-white" style="width: 520px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+            <div class="d-flex w-90 mx-auto text-center justify-content-center">
+                <div class="d-flex flex-wrap align-items-center w-30">
+                    <img class="align-middle" style="width: 100px;" src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Shopping-cart-transparent-icon.png" alt="Carrito">
+                </div>
+
+                <div class="w-50">
+                    <p class="fw-bold fs-3 m-0">Carrito vacío</p>
+                    <p>Aprovecha los precios especiales que tenemos para ti.</p>
+                </div>
+
+            </div>
+
+            <hr class="my-2">
+
+            <div class="w-100 text-center">
+                <a asp-action="Portal" class="btn btn-dark fw-bold w-60 py-2" style="border-radius: 50px;">
+                    Ver productos
+                </a>
+            </div>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,121 @@
+﻿@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+@{
+	ViewData["BodyBGColor"] = "bg-light";
+}
+
+
+@{
+	//Habilitar footer
+	ViewData["Footer"] = "Si";
+}
+
+
+<div id="bannersindex" class="carousel slide mx-auto" style="max-width:1600px" data-bs-ride="carousel">
+	<div class="carousel-indicators">
+		<button type="button" data-bs-target="#bannersindex" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+		<button type="button" data-bs-target="#bannersindex" data-bs-slide-to="1" aria-label="Slide 2"></button>
+		<button type="button" data-bs-target="#bannersindex" data-bs-slide-to="2" aria-label="Slide 3"></button>
+	</div>
+	<style>
+		.carousel-caption.d-none.d-md-block{
+			padding-bottom:21%;
+		}
+
+		h1.fw-bold{
+			text-transform:uppercase;
+		}
+	</style>
+	<div class="carousel-inner">
+		<div class="carousel-item active">
+			<a href="ECommerce/FiltrarPorCategoria?idCategoria=1000">
+				<img style="filter: brightness(50%);" src="https://i.ibb.co/Jv9kKK9/futcalle.jpg" class="d-block w-100" alt="...">
+			</a>
+			<div class="carousel-caption d-none d-md-block">
+				<h1 class="fw-bold">Fútbol</h1>
+				<p>"¡Equípate como un profesional y conquista la cancha!"</p>
+			</div>
+		</div>
+		<div class="carousel-item">
+			<a href="ECommerce/FiltrarPorCategoria?idCategoria=1001">
+				<img style="filter: brightness(50%);" src="https://i.ibb.co/GxDdJLr/running.jpg" class="d-block w-100" alt="...">
+			</a>
+			<div class="carousel-caption d-none d-md-block">
+				<h1 class="fw-bold">Running</h1>
+				<p>"¡Corre más lejos, más rápido y con mayor comodidad con nuestra gama de productos de running!"</p>
+			</div>
+		</div>
+		<div class="carousel-item">
+			<a href="ECommerce/FiltrarPorCategoria?idCategoria=1002">
+				<img style="filter: brightness(50%);" src="https://i.ibb.co/k3H1LXm/gym.jpg" class="d-block w-100" alt="...">
+			</a>
+			<div class="carousel-caption d-none d-md-block">
+				<h1 class="fw-bold">Gimnasio</h1>
+				<p>"¡Descubre tu mejor versión con nuestra selección de artículos de gimnasio!"</p>
+			</div>
+		</div>
+	</div>
+	<button class="carousel-control-prev" type="button" data-bs-target="#bannersindex" data-bs-slide="prev">
+		<span hidden class="carousel-control-prev-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Previous</span>
+	</button>
+	<button class="carousel-control-next" type="button" data-bs-target="#bannersindex" data-bs-slide="next">
+		<span hidden class="carousel-control-next-icon" aria-hidden="true"></span>
+		<span class="visually-hidden">Next</span>
+	</button>
+</div>
+
+
+<style>
+	.about-us-div{
+		display: flex;
+		justify-content:space-evenly;
+	}
+
+	.about-us-div *{
+		width:35%;
+	}
+
+	.about-us-div p {
+		text-align:center;
+		margin-bottom:0;
+	}
+	
+
+	@@media only screen and (max-width: 750px) {
+
+		.about-us-div {
+			display: block;
+		}
+
+		.about-us-div * {
+			width: 90%;
+			margin-left:auto;
+			margin-right:auto;
+		}
+
+	}
+
+
+</style>
+
+<div class="bg-white py-5">
+	<div class="w-95 mx-auto" style="max-width:1600px">
+		<h1 class="text-center m-0 fw-bold py-2">
+			¿Quiénes somos?
+		</h1>
+		<div class="about-us-div text-center pt-3" style="align-items:center">
+			<img src="https://mediaapi.moloni.org/assets/image/molonies/2020/08/03/15/ab154398-b58e-4cfb-8254-372b307b62fb.png" />
+			<p style="font-size:18px">Como empresa de artículos deportivos, nos enorgullece ofrecer una amplia gama de productos para satisfacer todas las necesidades atléticas de nuestros clientes, desde ropa y calzado especializado hasta equipos y accesorios de alta calidad.</p>
+		</div>
+	</div>
+</div>
+
+
+

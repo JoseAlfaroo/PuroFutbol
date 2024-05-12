@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Ver Solicitudes";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+
+<h3 class="text-center py-3 text-light" style="background-color: rgb(47 47 47);">
+    <span class="material-icons-outlined">add_moderator</span>&nbsp;Permisos
+</h3>
+
+
+<div class="w-95 mx-auto">
+    <p>
+        <a asp-action="ListarSolicitantes" asp-controller="Usuario" class="btn btn-dark">Ver solicitudes pendientes</a>
+    </p>
+</div>
+
+<div class="mx-auto w-95">
+    <hr class="text-dark">
+</div>
+
+
+<div class="w-95 mx-auto">
+    @if (ViewBag.Solicitantes != null && ViewBag.Solicitantes.Count > 0)
+    {
+        <table class="text-center table table-bordered table-striped table-hover">
+            <tr>
+                <th style="background-color: rgb(47 47 47); color:white" class="align-middle">ID Solicitud</th>
+                <th style="background-color: rgb(47 47 47); color:white" class="align-middle">Solicitante</th>
+                <th style="background-color: rgb(47 47 47); color:white" class="align-middle">Email</th>
+                <th style="background-color: rgb(47 47 47); color:white" class="align-middle">Fecha de solicitud</th>
+                <th style="background-color: rgb(47 47 47); color:white" class="align-middle">Fecha de aprobación</th>
+                <th style="background-color: rgb(47 47 47); color:white" class="align-middle">Estado</th>
+            </tr>
+
+            @foreach (var solicitante in ViewBag.Solicitantes)
+            {
+                if (solicitante.EstadoSolicitud != "Pendiente")
+                {
+                    <tr>
+                        <td class="align-middle">@solicitante.idSolicitud</td>
+                        <td class="align-middle">@solicitante.id_usuario - @solicitante.nombres</td>
+                        <td class="align-middle">@solicitante.email</td>
+                        <td class="align-middle">@solicitante.FechaRegSolicitud.ToString("dd/MM/yyyy")</td>
+                        <td class="align-middle">@solicitante.FechaAprobacion.ToString("dd/MM/yyyy")</td>
+                        <td class="align-middle">@solicitante.EstadoSolicitud</td>
+                    </tr>
+                }
+            }
+        </table>
+    }
+    else
+    {
+        <p class="text-dark">No se encontraron solicitudes pendientes.</p>
+
+    }
+
+</div>

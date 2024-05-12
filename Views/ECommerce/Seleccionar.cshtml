@@ -1,0 +1,155 @@
+﻿@model Ecommerce_2024_1_NJD.Models.Producto
+
+@{
+    Layout = "_LayoutTienda";
+}
+
+
+@{
+    ViewData["Title"] = "Detalles de producto";
+}
+
+@{
+    //Habilitar footer
+    ViewData["Footer"] = "Si";
+}
+
+
+<style>
+    *:focus {
+        outline: none;
+    }
+
+    body {
+        background-color: #EEEEEE;
+    }
+
+    .input-cantidad{
+        text-align: center;
+        font-size: 14pt;
+        height: 100%;
+        border: 0;
+        width: 40px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+</style>
+
+<div class="w-100 mx-auto" style="background-color: #EEEEEE; margin:30px auto;">
+    <div class="bg-white mx-auto" style="max-width: 1000px; width:95%;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 10px;">
+        <div class="col-12 bg-white px-3 py-2">
+            <a asp-action="Portal" class="btn btn-dark fw-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                </svg>&nbsp;Regresar a portal
+            </a>
+        </div>
+        <hr class="my-0">
+        <div class="w-100 bg-white mx-auto d-flex py-3 ">
+            <div class="col-5 text-center bg-white">
+                <img class="rounded" style="width: 320px; height: 320px;" src="@Url.Action("ObtenerImagen", "Producto", new { id = Model.IdProducto })" alt="Imagen del Producto" />
+            </div>
+            <div class="col-7 bg-white px-2 py-4">
+                <div class="d-flex w-95 mx-auto">
+                    <p class="bg-white fw-bold my-0 col-10">@Html.DisplayFor(model => model.NombreCategoria)</p>
+                    <p class="bg-white my-0 col-2 align-bottom" style="font-size: 12px">Código:&nbsp;@Html.DisplayFor(model => model.IdProducto)</p>
+                </div>
+
+                <p class="w-95 mx-auto bg-white my-1 fs-4">@Html.DisplayFor(model => model.Nombre)</p>
+
+                <hr>
+
+                <div class="w-95 mx-auto d-flex">
+
+                    <div class="col-12 bg-white mx-auto">
+                        <p class="fw-bold fs-3 bg-white m-0">S/&nbsp;@Html.DisplayFor(model => model.Precio)</p>
+                        
+                        <form action="Seleccionar" method="post">
+                            <div class="d-flex my-3 justify-content-center">
+                                <button style="border-radius: 0;" class="btn btn-dark" id="btnRestar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" />
+                                    </svg>
+                                </button>
+                                &nbsp;
+                                <div>
+                                    @Html.TextBox("cantidad", 1, new { type = "number", min = 1, max = Model.Stock, @class = "input-cantidad" })
+                                </div>
+                                &nbsp;
+                                <button style="border-radius: 0;" class="btn btn-dark" id="btnSumar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <center>
+                                <div>
+                                        @Html.Hidden("idProducto", Model.IdProducto)
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input style="border-radius: 250px;" class="btn btn-dark mx-auto w-60 py-3" type="submit" value="Agregar al carrito"/>
+                                            </div>
+                                        </div>
+                                </div>
+
+                            </center>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Obtener elementos
+        var btnSumar = document.getElementById("btnSumar");
+        var btnRestar = document.getElementById("btnRestar");
+        var inputCantidad = document.querySelector(".input-cantidad");
+
+        // Agregar evento al botón Sumar
+        btnSumar.addEventListener("click", function (event) {
+            event.preventDefault(); // Evitar el comportamiento predeterminado del botón
+            // Obtener el valor actual del input
+            var valorActual = parseInt(inputCantidad.value);
+            // Incrementar el valor
+            inputCantidad.value = valorActual + 1;
+        });
+
+        // Agregar evento al botón Restar
+        btnRestar.addEventListener("click", function (event) {
+            event.preventDefault(); // Evitar el comportamiento predeterminado del botón
+            // Obtener el valor actual del input
+            var valorActual = parseInt(inputCantidad.value);
+            // Verificar que el valor sea mayor que el mínimo
+            if (valorActual > 1) {
+                // Disminuir el valor
+                inputCantidad.value = valorActual - 1;
+            }
+        });
+    });
+</script>
+
+<!--
+<div>
+    @ViewBag.mensaje
+</div>
+-->

@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewData["Title"] = "Solicitantes";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<h3 class="text-center py-3 text-light" style="background-color: rgb(47 47 47);">
+    <span class="material-icons-outlined">add_moderator</span>&nbsp;Permisos
+</h3>
+
+<div class="w-95 mx-auto">
+    <p>
+        <a asp-action="HistorialSolicitudes" asp-controller="Usuario" class="btn btn-dark">Ver historial de solicitudes</a>
+    </p>
+</div>
+
+
+<div class="mx-auto w-95">
+    <hr class="text-dark">
+</div>
+
+
+<div class="mx-auto w-95">
+    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage))
+    {
+        <p class="text-danger rounded fw-bold my-2 border border-danger border-2 px-3 py-2 bg-danger-subtle">@ViewBag.ErrorMessage</p>
+        
+    }
+
+
+
+    @if (ViewBag.Solicitantes != null && ViewBag.Solicitantes.Count > 0)
+    {
+        <table class="text-center table table-bordered table-striped table-hover">
+            <tr>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">ID Solicitud</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">Solicitante</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">Email</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">Acciones</th>
+            </tr>
+
+            @foreach (var solicitante in ViewBag.Solicitantes)
+            {
+                if (solicitante.EstadoSolicitud == "Pendiente")
+                {
+                    <tr>
+                        <td class="align-middle">@solicitante.idSolicitud</td>
+                        <td class="align-middle">@solicitante.id_usuario - @solicitante.nombres</td>
+                        <td class="align-middle">@solicitante.email</td>
+                        <td class="align-middle">
+                            <button type="button" class="btn bg-success fw-bold text-light" data-bs-toggle="modal" data-bs-target="#confirmarAprobacion-@solicitante.idSolicitud">Dar permisos</button>
+                        </td>
+                    </tr>
+                }
+
+            }
+        </table>
+    }
+    else
+    {
+        <p class="text-dark">No se encontraron solicitudes pendientes.</p>
+        
+    }
+
+    
+
+</div>
+
+
+@foreach (var solicitante in ViewBag.Solicitantes)
+{
+    <div class="modal fade" id="confirmarAprobacion-@solicitante.idSolicitud" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmarAprobacionLabel-@solicitante.idSolicitud" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header" data-bs-theme="dark">
+                    <h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">Confirmar contraseña</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="AgregarAdministrador" asp-controller="Usuario" method="post">
+                    <div class="modal-body">
+
+                            <input type="hidden" name="idSolicitante" value="@solicitante.id_usuario" readonly />
+                            <div class="form-group p-2">
+                                <label class="my-2" for="password">Ingrese su contraseña para continuar:</label>
+                                <input required type="password" id="password" name="password" class="form-control my-2" />
+                            </div>
+                            
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-warning d-block fw-bold mx-auto">Dar permisos de moderador</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

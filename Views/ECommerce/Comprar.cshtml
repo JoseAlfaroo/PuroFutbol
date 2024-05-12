@@ -1,0 +1,81 @@
+﻿
+@model Ecommerce_2024_1_NJD.Models.UsuarioRegPedido
+
+@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Realizar Pedido";
+}
+
+<style>
+    body {
+        background-color: #EEEEEE;
+    }
+</style>
+
+<!--
+
+<h1>Comprar</h1>
+<p>
+    <a asp-action="Portal" class="btn btn-primary">Ir a la Tienda</a>
+</p>
+<a asp-action="Logout" asp-controller="Usuario">Cerrar Sesion</a>
+
+-->
+
+@if (!string.IsNullOrEmpty(ViewData["IdUsuario"]?.ToString()) && !string.IsNullOrEmpty(ViewData["FullName"]?.ToString()))
+{
+
+    <div class="mx-auto rounded-2 mt-5 p-3 bg-white" style="width: 600px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+        <div class="w-90 mx-auto">
+            <h3 class="fw-bold">¡Ya casi terminas de hacer tu pedido!</h3>
+            <hr class="my-2">
+            <form method="post" asp-action="Comprar">
+                <div class="form-group my-4">
+                    <label class="fw-bold" for="dniC">Ingresa el número de tu DNI</label>
+                    <input type="text" class="form-control" id="dni" name="dni">
+                </div>
+                <div class="form-group my-4">
+                    <label class="fw-bold" for="direccionDestino">Indica la dirección de entrega</label>
+                    <input type="text" class="form-control" id="direccionDestino" name="direccionDestino">
+                </div>
+
+                <hr class="my-2">
+
+                <!--Luego renombrar y redirigir para continuar al pago-->
+                <center>
+                    <button type="submit" class="btn btn-dark rounded-5 px-4 py-2">Realizar Pedido</button>
+                </center>
+            </form>
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        No deberías estar viendo esto
+    </div>
+}
+
+
+
+
+<!--
+<form method="post" asp-action="Comprar">
+    <div class="form-group">
+        <label for="dniC">DNI:</label>
+        <input type="text" class="form-control" id="dni" name="dni">
+    </div>
+    <div class="form-group">
+        <label for="direccionDestino">Dirección de Destino:</label>
+        <input type="text" class="form-control" id="direccionDestino" name="direccionDestino">
+    </div>
+    <button type="submit" class="btn btn-primary">Comprar</button>
+</form>
+<div>
+    @ViewBag.mensaje
+</div>-->

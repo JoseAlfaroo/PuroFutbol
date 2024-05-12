@@ -1,0 +1,157 @@
+﻿@{
+    Layout = "_LayoutDashboard";
+}
+
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+@model IEnumerable<Ecommerce_2024_1_NJD.Models.CategoriasProductos>
+
+<h3 class="text-center py-3 text-light" style="background-color: rgb(47 47 47);">
+    <span class="material-icons-outlined">category</span>&nbsp;Categorías
+</h3>
+
+<div class="w-95 mx-auto">
+    <p>
+        <a asp-action="RegistrarCategoria" class="btn btn-dark">Registrar una nueva categoria</a>
+    </p>
+</div>
+
+<div class="w-95 mx-auto">
+    <hr class="text-dark">
+</div>
+
+
+<div class="w-95 mx-auto">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="text-center table table-bordered table-hover" id="categoriasTable">
+                <thead>
+                    <tr>
+                        <th class="align-middle" style="background-color: rgb(47 47 47); color: white;">#</th>
+                        <th class="align-middle" style="background-color: rgb(47 47 47); color: white;">Nombre</th>
+                        <th class="align-middle" style="background-color: rgb(47 47 47); color: white;">Descripción</th>
+                        <th class="align-middle" style="background-color: rgb(47 47 47); color: white;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var categoria in Model)
+                    {
+                        <tr>
+                            <td style="background-color: white;" class="align-middle">@categoria.IdCategoria</td>
+                            <td style="background-color: white;" class="align-middle">@categoria.NombreCategoria</td>
+                            <td style="background-color: white;" class="align-middle">@categoria.Descripcion</td>
+                            <td style="background-color: white;" class="align-middle">
+                                <button type="button" class="btn btn-dark text-light fw-bold" data-bs-toggle="modal" data-bs-target="#editarCategoriaModal" data-id="@categoria.IdCategoria" data-nombre="@categoria.NombreCategoria" data-descripcion="@categoria.Descripcion">Editar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade text-dark" id="editarCategoriaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-light" bis_skin_checked="1" style="background-color: #23b37c;">
+                <h4 class="modal-title fw-bold" id="exampleModalLabel">EDITAR CATEGORÍA</h4>
+                <button style="--bs-btn-close-opacity:1" type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarCategoriaForm">
+                    <input type="hidden" id="categoriaId" name="IdCategoria" />
+                    <div class="mb-4">
+                        <label for="nombreCategoria" class="form-label fw-bold">Nombre de la categoría</label>
+                        <input type="text" class="form-control" id="nombreCategoria" name="NombreCategoria">
+                    </div>
+                    <div class="mb-4">
+                        <label for="descripcion" class="form-label fw-bold">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="Descripcion"></textarea>
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success fw-bold" id="actualizarCategoriaBtn">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Función para abrir el modal de edición de categoría
+            $('#editarCategoriaModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Botón que activó el modal
+                var id = button.data('id'); // Extraer el ID de la categoría de los datos del botón
+                var nombre = button.data('nombre'); // Extraer el nombre de la categoría de los datos del botón
+                var descripcion = button.data('descripcion'); // Extraer la descripción de la categoría de los datos del botón
+
+                // Actualizar los campos del formulario del modal con los datos de la categoría
+                var modal = $(this);
+                modal.find('.modal-body #categoriaId').val(id);
+                modal.find('.modal-body #nombreCategoria').val(nombre);
+                modal.find('.modal-body #descripcion').val(descripcion);
+            });
+
+            // Función para enviar la solicitud de actualización de la categoría
+            $('#actualizarCategoriaBtn').click(function () {
+                var id = $('#categoriaId').val();
+                var nombre = $('#nombreCategoria').val();
+                var descripcion = $('#descripcion').val();
+
+                // Preparar los datos del formulario para enviarlos mediante FormData
+                var formData = new FormData();
+                formData.append('IdCategoria', id);
+                formData.append('NombreCategoria', nombre);
+                formData.append('Descripcion', descripcion);
+
+                // Realizar la solicitud AJAX para actualizar la categoría
+                $.ajax({
+                    type: 'POST',
+                    url: '/Producto/ActualizarCategoria',
+                    data: formData,
+                    contentType: false, // No establecer contentType a false cuando se usa FormData
+                    processData: false, // No procesar los datos de forma convencional
+                    success: function (response) {
+                        if (response.error) {
+                            // Mostrar alerta de error con SweetAlert2
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error al actualizar la categoría',
+                                text: 'Por favor, inténtalo de nuevo',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        } else {
+                            // Mostrar alerta de error con SweetAlert2
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error al actualizar la categoría',
+                                text: 'Por favor, inténtalo de nuevo',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    },
+                    success: function () {
+                        // Mostrar alerta de éxito con SweetAlert2
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Categoría actualizada correctamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload(); // Recargar la página después de la actualización
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

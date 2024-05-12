@@ -1,0 +1,128 @@
+﻿
+@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Registrarse";
+}
+
+@{
+    ViewData["BodyBGColor"] = "bg-maomenooscuro";
+}
+<!--
+<body class="m-0">
+    <div class="frmcontainer change">
+        <div class="forms-container">
+            <div class="form-control signup-form">
+                <form asp-action="RegisterPage" method="post">
+                    <h2>Registrarse</h2>
+                    <input type="text" name="nombres" placeholder="Nombres" required />
+                    <input type="text" name="apellidos" placeholder="Apellidos" required />
+                    <input type="text" name="username" placeholder="Nombre de usuario" required />
+                    <input type="email" name="email" placeholder="Correo" required />
+                    <input type="password" name="pass" placeholder="Contraseña" required />
+                    <button>Registrarme</button>
+                    <div style="color:red">
+                        @ViewBag.ErrorEx
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="intros-container">
+
+            <div class="intro-control signup-intro">
+                <div class="intro-control__inner">
+                    <img class="img-fluid rounded d-block w-100" src="https://i.ibb.co/Ykky8Zm/defpurofutb.png">
+                    <button id="signin-btn" onclick="redirectToRegisterPage()">Ya tienes una cuenta? Inicia sesión</button>
+
+                    <script>
+                        function redirectToRegisterPage() {
+                            window.location.href = '@Url.Action("LoginPage", "Usuario")';
+                        }
+                    </script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+-->
+<style>
+    .form-group-2{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .form-group-2 .form-group{
+        width: 45%
+    }
+
+    @@media only screen and (max-width: 650px) {
+        .form-group-2 {
+            display: block;
+        }
+
+        .form-group-2 .form-group {
+            width: 100%;
+        }
+    }
+
+
+</style>
+
+
+<div>
+    <div>
+        <div style="max-width: 650px; width: 90%; background-color: white; box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);" class="mx-auto p-3 mt-4 mb-3 rounded">
+            <form method="post" action="RegisterPage">
+                <div class="d-flex justify-content-between px-2">
+                    <img class="mx-auto" src="https://i.ibb.co/R2z2yVx/PUROFUTBOL-LOGO-PNG.png" style="width: 65%; max-width: 300px; filter: brightness(0);">
+                </div>
+                <hr style="color:black; opacity: .45" class="my-3" />
+
+                <div class="w-95 mx-auto form-group-2">
+                    <div class="form-group text-dark mb-3">
+                        <label>Nombres</label>
+                        <input autocomplete="off" type="text" name="nombres" class="form-control" id="nombres" placeholder="Nombres">
+                    </div>
+                    <div class="form-group text-dark mb-3">
+                        <label>Apellidos</label>
+                        <input autocomplete="off" type="text" name="apellidos" class="form-control" id="apellidos" placeholder="Apellidos">
+                    </div>
+                </div>
+
+                <div class="w-95 mx-auto form-group-2">
+                    <div class="form-group text-dark mb-3">
+                        <label>Nombre de usuario</label>
+                        <input autocomplete="off" type="text" name="username" class="form-control" id="username" placeholder="Nombre de usuario / Correo">
+                    </div>
+                    <div class="form-group text-dark mb-3">
+                        <label>Contraseña</label>
+                        <input autocomplete="off" type="password" name="pass" class="form-control" id="pass" placeholder="Contraseña">
+                    </div>
+                </div>
+
+                <div class="w-95 mx-auto form-group-2">
+                    <div class="form-group text-dark mb-3">
+                        <label>Email</label>
+                        <input autocomplete="off" type="email" name="email" class="form-control" id="email" placeholder="Email">
+                    </div>
+                </div>
+
+
+                <div class="form-group text-dark mb-2 mx-auto" style="width: 95%">
+                    <button type="submit" class="btn btn-dark fw-bold d-block mx-auto">Continuar</button>
+                    <div style="color: #2f2f2f" class="mt-3 text-center fw-bold">
+                        @ViewBag.ErrorEx
+                    </div>
+                    <hr style="color:black; opacity: .45">
+                    <div class="text-center">
+                        <a asp-action="RecuperaTuContraseña" asp-controller="Usuario" class="text-dark">Recuperar contraseña</a> | <a asp-action="LoginPage" asp-controller="Usuario" class="text-dark">Iniciar sesión</a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

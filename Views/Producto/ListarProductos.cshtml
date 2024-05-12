@@ -1,0 +1,256 @@
+﻿@{
+    Layout = "_LayoutDashboard";
+}
+
+@{
+    ViewData["Title"] = "Productos";
+}
+
+
+
+@model Ecommerce_2024_1_NJD.Models.ProductosYCategorias
+
+
+<h3 class="text-center py-3 text-light" style="background-color: rgb(47 47 47);">
+    <span class="material-icons-outlined">inventory_2</span>&nbsp;Productos
+</h3>
+
+<div class="w-95 mx-auto">
+    <p>
+        <a asp-action="RegistrarProducto" class="btn btn-dark">Registrar un nuevo producto</a>
+    </p>
+</div>
+
+<div class="w-95 mx-auto">
+    <hr class="text-dark">
+</div>
+
+<div class="w-95 mx-auto">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="text-center table table-bordered table-hover" id="productosTable">
+                <thead>
+                    <tr>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">#</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Imagen</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Nombre</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Precio</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Stock</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Categoría</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle d-none">ID CAT</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Editar</th>
+                        <th style="background-color: rgb(47 47 47);color: white;" class="align-middle">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var producto in Model.Productos)
+                    {
+                        <tr>
+                            <td class="align-middle">@producto.IdProducto</td>
+                            <td class="align-middle">
+                                <img class="rounded" style="width: 100px; height: 100px;" src="@Url.Action("ObtenerImagen", "Producto", new { id = producto.IdProducto })" alt="Imagen del Producto"/>
+                            </td>
+                            <td class="align-middle">@producto.Nombre</td>
+                            <td class="align-middle">@producto.Precio</td>
+                            <td class="align-middle">@producto.Stock</td>
+                            <td class="align-middle">@producto.NombreCategoria</td>
+                            <td class="align-middle d-none">@producto.IdCategoria</td>
+                            <td class="align-middle">
+                                <button type="button" class="btn btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#editarProductoModal" data-id="@producto.IdProducto" data-nombre="@producto.Nombre" data-precio="@producto.Precio" data-stock="@producto.Stock" data-idcategoria="@producto.IdCategoria">Editar</button>
+                            </td>
+
+                            <td class="align-middle">
+                                @if (producto.Estado == "Disponible")
+                                {
+                                    <button class="btn btn-success cambiar-estado fw-bold" data-id="@producto.IdProducto">@producto.Estado</button>
+                                }
+                                else if (producto.Estado == "No disponible")
+                                {
+                                    <button class="btn btn-danger cambiar-estado fw-bold" data-id="@producto.IdProducto">N/A</button>
+                                }
+                                else
+                                {
+                                    <button disabled class="btn btn-dark fw-bold">?????</button>
+                                }
+                                
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade text-dark" id="editarProductoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-light" bis_skin_checked="1" style="background-color: #23b37c;">
+                <h4 class="modal-title fw-bold" id="exampleModalLabel">EDITAR PRODUCTO</h4>
+                <button style="--bs-btn-close-opacity:1" type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarProductoForm">
+                    <input type="hidden" id="productoId" name="IdProducto" />
+                    <div class="mb-4">
+                        <label for="nombre" class="form-label fw-bold">Ingrese nombre del producto</label>
+                        <input type="text" class="form-control" id="nombre" name="Nombre">
+                    </div>
+                    <div class="mb-4">
+                        <label for="precio" class="form-label fw-bold">Indicar nuevo precio</label>
+                        <input type="text" class="form-control" id="precio" name="Precio" inputmode="decimal">
+                    </div>
+                    <div class="mb-4">
+                        <label for="stock" class="form-label fw-bold">Indicar stock</label>
+                        <input type="number" class="form-control" id="stock" name="Stock">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="IdCategoria" class="form-label fw-bold">Actualizar categoria</label>
+                        <select asp-for="IdCategoria" asp-items="@Model.Categorias" class="form-select"></select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="imagen" class="form-label fw-bold">Seleccionar nueva imagen</label>
+                        <input type="file" class="form-control" id="imagen" name="Imagen">
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success fw-bold" id="actualizarProductoBtn">Actualizar</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Lógica para cambiar el estado
+    $(document).ready(function () {
+        $('.cambiar-estado').click(function () {
+            var idProducto = $(this).data('id');
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("EstadoProducto", "Producto")",
+                data: { idProducto: idProducto },
+                success: function (result) {
+                    if (result.success) {
+                        // Actualizar el texto del botón con el nuevo estado
+                        var btn = $(".cambiar-estado[data-id='" + idProducto + "']");
+                        
+                        if (result.estado == "Disponible"){
+                            btn.text(result.estado);
+                        }
+                        else{
+                            btn.text("N/A");
+                        }
+                        
+                        btn.removeClass("btn-danger btn-success");
+
+                        // Agregar clases según el nuevo estado
+                        if (result.estado === "Disponible") {
+                            btn.addClass("btn-success");
+                        } else if (result.estado === "No disponible") {
+                            btn.addClass("btn-danger");
+                        }
+
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function () {
+                    alert("Error al cambiar el estado del producto.");
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#editarProductoModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Botón que activó el modal
+            var id = button.data('id'); // Extraer el ID del producto de los datos del botón
+            var nombre = button.data('nombre'); // Extraer el nombre del producto de los datos del botón
+            var precio = button.data('precio'); // Extraer el precio del producto de los datos del botón
+            var stock = button.data('stock'); // Extraer el stock del producto de los datos del botón
+            var idCategoria = button.data('idcategoria');
+
+            // Actualizar los campos del formulario del modal con los datos del producto
+            var modal = $(this);
+            modal.find('.modal-body #productoId').val(id);
+            modal.find('.modal-body #nombre').val(nombre);
+            modal.find('.modal-body #precio').val(precio);
+            modal.find('.modal-body #stock').val(stock);
+            modal.find('.modal-body #IdCategoria').val(idCategoria);
+        });
+
+        // Función para enviar la solicitud de actualización del producto
+        $('#actualizarProductoBtn').click(function () {
+            var id = $('#productoId').val();
+            var nombre = $('#nombre').val();
+            var precio = $('#precio').val();
+            var stock = $('#stock').val();
+            var imagen = $('#imagen').prop('files')[0]; // Obtener el archivo de imagen seleccionado
+            var idcategoria = $('#IdCategoria').val();
+
+            // Preparar los datos del formulario para enviarlos mediante FormData
+            var formData = new FormData();
+            formData.append('IdProducto', id);
+            formData.append('Nombre', nombre);
+            formData.append('Precio', precio);
+            formData.append('Stock', stock);
+            formData.append('Imagen', imagen);
+            formData.append('IdCategoria', idcategoria);
+
+            // Realizar la solicitud AJAX para actualizar el producto
+            $.ajax({
+                type: 'POST',
+                url: '/Producto/ActualizarProducto',
+                data: formData,
+                contentType: false, // Importante: No establecer contentType a false cuando se usa FormData
+                processData: false, // Importante: No procesar los datos de forma convencional
+                success: function (response) {
+                    if (response.success) {
+                        alert('Producto actualizado correctamente');
+                        $('#editarProductoModal').modal('hide'); // Cerrar el modal después de la actualización
+                        location.reload(); // Recargar la página después de la actualización
+                    } else {
+                        alert('Error al actualizar el producto');
+                    }
+                },
+                error: function () {
+                    alert('Error al actualizar el producto');
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    // Selecciona el elemento input con el id "precio"
+    var precioInput = document.getElementById('precio');
+
+    // Agrega un event listener para el evento de entrada
+    precioInput.addEventListener('input', function () {
+        // Obtén el valor actual del input
+        var valor = precioInput.value;
+
+        // Expresión regular para validar el formato de precio
+        var regex = /^\d+(,\d*)?$/;
+
+        // Verifica si el valor coincide con la expresión regular
+        if (!regex.test(valor)) {
+            // Si no coincide, borra la última entrada
+            precioInput.value = valor.slice(0, -1);
+        }
+    });
+</script>

@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Resultado de inicio de sesión";
+}
+
+<h1>Resultado de inicio de sesión</h1>
+
+@if (!string.IsNullOrEmpty(ViewData["IdUsuario"]?.ToString()) && !string.IsNullOrEmpty(ViewData["FullName"]?.ToString()))
+{
+    <div class="alert alert-info" role="alert">
+        Bienvenido, @ViewData["FullName"]
+    </div>
+
+    <p>ID de Usuario: @ViewData["IdUsuario"]</p>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        No se pudo obtener el resultado del inicio de sesión.
+    </div>
+}
+
+<button id="signin-btn" onclick="redirectToRegisterPage()">VOLVER</button>
+
+<script>
+    function redirectToRegisterPage() {
+        window.location.href = '@Url.Action("Index", "Test")';
+    }
+</script>

@@ -1,0 +1,167 @@
+﻿@model IEnumerable<Producto>
+
+@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Catálogo de Productos";
+}
+
+@{
+    //Habilitar footer
+    ViewData["Footer"] = "Si";
+}
+
+<style>
+    
+    .catalogo{
+        max-width: 1000px;
+        width: 90%;
+        margin: 0 auto;
+        padding: 0 auto;
+    }
+
+    .row-cols-3>*{
+        width: 22%;
+        font-family: 'Helvetica', sans-serif;
+    }
+
+    
+    @@media (max-width: 1200px) {
+
+        .row-cols-3>*{
+            width: 30%;
+        }
+    }
+
+    @@media (max-width: 850px) {
+
+        .row-cols-3>*{
+            width: 40%;
+        }
+    }
+
+    @@media (max-width: 600px) {
+
+        .row-cols-3>*{
+            width: 80%;
+        }
+    }
+
+    .btn-agregar{
+        background-color: black;
+        color: white;
+        width: 100%;
+        font-weight: bold;
+        border-radius:3px;
+    }
+
+    .btn-agregar:hover {
+        background-color: #CFCFCF;
+        color: black;
+    }
+
+    .product{
+        background-color: rgb(255, 255, 255);
+        border-radius: 2px;
+        transform: scale(1.0, 1.0);
+        transition: all 250ms;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.07), 0 4px 8px rgba(0,0,0,0.07), 0 8px 16px rgba(0,0,0,0.07), 0 16px 32px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.07);
+    }
+
+    .product:hover{
+        transform: scale(1.05, 1.05);
+        transition: all 500ms;
+    }
+
+    body{
+        display: grid;
+        min-height: 100vh;
+        grid-template-rows: auto 1fr auto
+    }
+
+</style>
+
+
+<div style="max-width: 1000px;width: 90%;" class="mx-auto mt-3">
+    @if (!string.IsNullOrEmpty(ViewBag.Busqueda))
+    {
+        // Si haces una busqueda mediante la barra
+        <h3>Resultados para <span class="fw-bold">"@ViewBag.Busqueda"</span></h3>
+        <p>Se han encontrado @ViewBag.CantidadCoincidencias resultados</p>
+        <hr class="w-100 mb-0">
+    }
+    else if (!string.IsNullOrEmpty(ViewBag.NombreCategoria))
+    {
+        // Si seleccionas una categoría
+        <h3>Artículos de <span class="fw-bold">"@ViewBag.NombreCategoria"</span></h3>
+        <p>Mostrando @ViewBag.CantidadPorCategoria resultados</p>
+        <hr class="w-100 mb-0">
+    }
+    else
+    {
+        <h3>Nuestros artículos</h3>
+        <p>Todos los productos disponibles</p>
+        <hr class="w-100 mb-0">
+    }
+</div>
+
+@if (Model.Count() > 0)
+{
+    <div class="catalogo">
+
+        <div class="row row-cols-3 justify-content-around">
+            @foreach (var producto in Model)
+            {
+                <div class="product col my-4 align-center text-center py-3">
+
+                    <div class="prod-img px-2 ratio ratio-1x1">
+                        <img class="p-1 bg-white rounded" src="@Url.Action("ObtenerImagen", "Producto", new { id = producto.IdProducto })" alt="imagen del producto" width="100%">
+                    </div>
+                    <hr class="w-100 my-2 text-white">
+                    <div class="prod-info px-2">
+                        <p title="@producto.Nombre" class="my-1 fs-5 fw-bold" style="max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase">@Html.DisplayFor(modelItem => producto.Nombre)</p>
+                        <p class="my-2 d-none">@Html.DisplayFor(modelItem => producto.NombreCategoria)</p>
+                        <p class="my-1 fw-bold">S/.&nbsp;@Html.DisplayFor(modelItem => producto.Precio)</p>
+
+                    </div>
+                    <hr class="w-100 my-2 text-white">
+                    @if (!string.IsNullOrEmpty(ViewData["IdUsuario"]?.ToString()) && !string.IsNullOrEmpty(ViewData["FullName"]?.ToString()))
+                    {
+                        @Html.ActionLink("Agregar al carrito", "Seleccionar", new { id = producto.IdProducto }, new { @class = "btn btn-agregar" })
+                    }
+                    else
+                    {
+                        <a class="btn-agregar btn" href="@Url.Action("LoginPage", "Usuario")">Agregar al carrito</a>
+                    }
+
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="mx-auto rounded-2 p-3 my-5 bg-white" style="max-width: 500px; width: 90%;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 10px;">
+        <div class="d-flex w-90 mx-auto text-center justify-content-center">
+            <div class="d-flex flex-wrap align-items-center w-30">
+                <img class="align-middle" style="width: 100px;" src="https://cdn-icons-png.flaticon.com/512/1178/1178479.png" alt="Carrito">
+            </div>
+
+            <div class="w-50">
+                <p class="fw-bold fs-3 m-0">Lo sentimos</p>
+                <p>No se encontraron resultados.</p>
+            </div>
+
+        </div>
+
+        <hr class="my-2">
+
+        <div class="w-100 text-center">
+            <a class="btn btn-dark fw-bold w-60 py-2" style="border-radius: 50px;" asp-action="Portal" asp-controller="ECommerce">
+                Ver productos
+            </a>
+        </div>
+    </div>
+}

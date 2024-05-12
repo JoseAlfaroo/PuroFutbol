@@ -1,0 +1,432 @@
+﻿@model IEnumerable<Ecommerce_2024_1_NJD.Models.Pedido>
+
+@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Facturacion";
+}
+
+@{
+    //Habilitar footer
+    ViewData["Footer"] = "Si";
+}
+
+
+<style>
+    body {
+        background-color: #EEEEEE;
+    }
+</style>
+
+@{
+    //PARA MANEJAR EL LSITADO DE PEDIDOS
+    var pedidos = Model.Where(p => p.idUsuario == Convert.ToInt32(ViewData["IdUsuario"])).ToList();
+
+    // PARA MANEJAR EL PEDIDO ESPECIFICADO
+    var pedidoUnico = Model.FirstOrDefault(p => p.idUsuario == Convert.ToInt32(ViewData["IdUsuario"]));
+}
+
+@{
+    // Esta variable la pongo para calcular el total a pagar
+    decimal importetotal = 0; // Inicializando el contador
+}
+
+
+@if (pedidos.Count == 1)
+{
+    <div class="mx-auto rounded-2 my-4 p-3 bg-white" style="width: 600px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+        <div class="mx-auto w-90">
+
+            <h3 class="fw-bold text-center">Informacion acerca de pedido #@pedidoUnico.idPedido</h3>
+            
+            <hr class="my-3">
+            
+            <div>
+
+                <p>
+                    El pedido fue registrado el día <span class="fw-bold">@pedidoUnico.fechaRegistroPedido.ToString("dd/MM/yyyy")</span>.
+                </p>
+
+                <p>
+                    El número de DNI que se proporcionó es <span class="fw-bold">@pedidoUnico.dniCliente</span>.
+                </p>
+                
+                <p>
+                    Usted indicó <span class="fw-bold">"@pedidoUnico.direccionDestino"</span> como la dirección de entrega.                    
+                </p>
+
+                @{
+                    // Aquí le puse que la fecha de entrega del pedido sea dos días tras el pago
+                    DateTime FechaDeEntrega = pedidoUnico.Fecha.AddDays(2);
+                    string FechaEntregaString = FechaDeEntrega.ToString("dd/MM/yyyy");
+                }
+
+                @if (pedidoUnico.estadoPedido == "Pendiente")
+                {
+                    // NADA xdxd
+                }
+                else if (pedidoUnico.estadoPedido == "Pagado")
+                {
+                    <p>El pago fue realizado el día <span class="fw-bold">@pedidoUnico.Fecha.ToString("dd/MM/yyyy")</span> y fue guardado con el identificador <span class="fw-bold">@pedidoUnico.idPago</span>.</p>
+                    <p>Su entrega está programada para el día <span class="fw-bold">@FechaEntregaString</span>, entre las 12 y 20 horas.</p>
+                }
+                else
+                {
+                    <p>No deberías estar viendo esto</p>
+                }
+            </div>
+        </div>
+
+        <div class="py-4 mx-auto w-90">
+            <table class="mx-auto table-borderless">
+
+                <tbody>
+                    @foreach (var detalle in pedidoUnico.detallesPedido)
+                    {
+                        <tr style="background-color: transparent">
+                            <td class="align-middle text-end">@detalle.NombreProducto x @detalle.cantidad</td>
+                            <td class="align-middle text-center">-</td>
+                            <td class="align-middle text-end">S/.&nbsp;@detalle.Precio</td>
+
+                        </tr>
+
+                        importetotal += detalle.Precio;
+                    }
+
+                    <tr class="fw-bold border-top border-dark border-2 text-dark" style="background-color: transparent">
+                        <td class="align-middle text-end">Total a pagar</td>
+                        <td class="align-middle text-center" style="color:transparent">-----</td>
+                        <td class="align-middle text-end">S/.&nbsp;@importetotal</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <hr class="my-3">
+
+        @if (pedidoUnico.estadoPedido == "Pendiente")
+        {
+            <button type="button" class="btn btn-warning d-block mx-auto fw-bold" onclick="abrirModalPago(@pedidoUnico.idPedido)">Realizar Pago</button>
+        }
+        else
+        {
+            <div class="d-flex justify-content-around">
+                <a class="btn btn-dark d-block fw-bold" href="@Url.Action("ListadoPedidosxUsuario", "Pedidos")">Volver a listado de pedidos</a>
+            </div>
+        }
+
+        
+    </div>
+
+}
+else
+{
+    <div class="mx-auto rounded-2 p-3 mt-4 mb-4 bg-white" style="width: 520px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+        <div class="d-flex w-90 mx-auto text-center justify-content-center">
+            <div class="d-flex flex-wrap align-items-center w-30">
+                <img class="align-middle" style="width: 100px;" src="https://icons.veryicon.com/png/o/miscellaneous/regular-icon/alert-28.png" alt="Carrito">
+            </div>
+
+            <div class="w-50">
+                <p class="fw-bold fs-3 m-0 mb-3" style="line-height:1.2">Pedido no encontrado</p>
+                <p>El pedido no se ha encontrado o no está disponible.</p>
+            </div>
+
+        </div>
+
+        <hr class="my-2">
+
+        <div class="w-100 text-center">
+            <a asp-action="ListadoPedidosxUsuario" asp-controller="Pedidos" class="btn btn-dark fw-bold w-60 py-2" style="border-radius: 50px;">
+                Ver mis pedidos
+            </a>
+        </div>
+    </div>
+}
+
+<!--
+    <h1>SE DEVOLVIERON @pedidos.Count PEDIDOS</h1>
+-->
+<div class="container d-none">
+    <div class="row">
+        <div class="col-md-8 mx-auto rounded border p-4 m-4">
+            <h2 class="text-center mb-5"><ins>Registre su Pago</ins></h2>
+
+            <form method="post">
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Nombres</label>
+                    <div class="col sm-8">
+                        <input class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">DNI</label>
+                    <div class="col sm-8">
+                        <input class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Tipo de Pago</label>
+                    <div class="col sm-8">
+                        <select class="form-select">
+                            <option value="Laptops">Tarjeta</option>
+                            <option value="Celulares">Yape</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Nro. de tarjeta</label>
+                    <div class="col sm-8">
+                        <input class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Dir. Domicilio</label>
+                    <div class="col sm-8">
+                        <input class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-4 col-form-label">Detalles</label>
+                    <div class="col sm-8">
+                        <input class="form-control">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="offset-sm-4 col-sm-4 d-grid">
+                        <button type="submit" class="btn btn-primary">Registrar</button>
+                    </div>
+                    <div class="col-sm-4 d-grid">
+                        <a class="btn btn-outline-primary" href="#" role="button">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal{
+        --bs-modal-border-radius: 0;
+        --bs-modal-bg: #000000;
+    }
+    .btn{
+        --bs-btn-border-radius:0;
+    }
+
+</style>
+
+<!-- Modal para realizar el pago -->
+<div class="modal fade" id="modalPago" tabindex="-1" role="dialog" aria-labelledby="modalPagoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-white" style="font-family: 'Arial Narrow'">
+            <form method="post" id="frmPago">
+                <div class="modal-header" data-bs-theme="dark">
+                    <h5 class="modal-title fw-bold" id="modalPagoLabel">INFORMACION DE FACTURACION</h5>
+                    <button data-bs-theme="dark" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> 
+
+
+
+                <div class="modal-body">
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label">Tipo de Pago</label>
+                            <div class="col sm-8">
+                                <select required class="form-select rounded-0 focus-ring focus-ring-light" id="metodoPago">
+                                    <option selected disabled value="">- Selecciona un método de pago -</option>
+                                    <option value="Visa">VISA</option>
+                                    <option value="MasterCard">Mastercard</option>
+                                    <option value="American Express">American Express</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="modal-fields" class="d-none">
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Nro. de tarjeta</label>
+                                <div class="col sm-8">
+                                    <input required id="nroTarjeta" class="form-control rounded-0 focus-ring focus-ring-light">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">CVV / CVC</label>
+                                <div class="col sm-4">
+                                    <input required id="cvv" class="w-50 form-control rounded-0 focus-ring focus-ring-light">
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Fecha de exp.</label>
+                                <div class="col sm-8 d-flex">
+                                    <select required id="mesExpi" class="w-30 form-select rounded-0 focus-ring focus-ring-light">
+                                        <option disabled selected value="">--</option>
+                                        <option value="1">01</option>
+                                        <option value="2">02</option>
+                                        <option value="3">03</option>
+                                        <option value="4">04</option>
+                                        <option value="5">05</option>
+                                        <option value="6">06</option>
+                                        <option value="7">07</option>
+                                        <option value="8">08</option>
+                                        <option value="9">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    &nbsp;
+                                    <select required id="añoExpi" class="w-30 form-select rounded-0 focus-ring focus-ring-light">
+                                        <option disabled selected value="">----</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                        <option value="2031">2031</option>
+                                        <option value="2032">2032</option>
+                                        <option value="2033">2033</option>
+                                        <option value="2034">2034</option>
+                                        <option value="2035">2035</option>
+                                        <option value="2036">2036</option>
+                                        <option value="2037">2037</option>
+                                        <option value="2038">2038</option>
+                                        <option value="2039">2039</option>
+                                        <option value="2040">2040</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Nombres</label>
+                                <div class="col sm-8">
+                                    <input required id="nombresCliente" class="form-control rounded-0 focus-ring focus-ring-light">
+                                </div>
+                            </div>
+
+
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Dirección</label>
+                                <div class="col sm-8">
+                                    <input required id="direccionCliente" class="form-control rounded-0 focus-ring focus-ring-light">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Teléfono</label>
+                                <div class="col sm-8">
+                                    <input required id="telefonoCliente" class="form-control rounded-0 focus-ring focus-ring-light">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="offset-sm-4 col-sm-4 d-grid">
+                                <button type="button" id="btnRealizarPago" class="btn btn-outline-light">Realizar Pago</button>
+                                </div>
+                                <div class="col-sm-4 d-grid">
+                                    <a class="btn btn-outline-light" href="#" data-bs-dismiss="modal" role="button">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    // Acceder al select
+    var selectMetodoPago = document.getElementById('metodoPago');
+
+    // Obtener el elemento #modal-fields
+    var modalFields = document.getElementById('modal-fields');
+
+    // Agregar un evento de cambio de opcion al select
+    selectMetodoPago.addEventListener('change', function () {
+        // Quitar la clase d-none al #modal-fields
+        modalFields.classList.remove('d-none');
+    });
+</script>
+
+
+<script>
+    function detallesModal(id) {
+        var modal = document.getElementById("myModal_" + id);
+        modal.style.display = "block";
+    }
+
+    function cerrarModal(id) {
+        var modal = document.getElementById("myModal_" + id);
+        modal.style.display = "none";
+    }
+</script>
+
+
+<script>
+    function abrirModalPago(idPedido) {
+        $('#modalPago').modal('show');
+
+        $('#btnRealizarPago').click(function () {
+            var metodoPago = $('#metodoPago').val();
+
+            // Validación del tipo de pago seleccionado
+            if (metodoPago === '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Por favor selecciona un método de pago',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+
+            // Envío de la solicitud de pago mediante AJAX
+            $.ajax({
+                url: '@Url.Action("RealizarPago", "Pago")',
+                type: 'POST',
+                data: { idPedido: idPedido, metodoPago: metodoPago },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pago realizado',
+                        text: 'El pago se ha realizado con éxito.',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        // Redirecciona a la acción de confirmación después de cerrar el modal
+                        $('#modalPago').modal('hide');
+                        window.location.href = '@Url.Action("Portal", "ECommerce")';
+                    });
+                },
+                error: function (xhr, status, error) {
+                    // Manejo de errores
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un error al realizar el pago. Por favor inténtalo de nuevo más tarde.',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+        });
+    }
+</script>

@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+
+
+<h3 class="text-center py-3 text-light" style="background-color: rgb(47 47 47);">
+    <span class="material-icons-outlined">groups</span>&nbsp;Clientes
+</h3>
+
+
+<div class="w-95 mx-auto">
+
+    @using (Html.BeginForm("BuscarClientes", "Cliente", FormMethod.Post))
+    {
+        <div class="d-flex">
+            @if (@ViewBag.StrBusqueda != null && @ViewBag.StrBusqueda != "*")
+            {
+                <input value="@ViewBag.StrBusqueda" placeholder="Buscar cliente por nombre/apellido" class="form-control" type="text" name="nombreBusqueda" />
+            }
+            else
+            {
+                <input value="" placeholder="Buscar cliente por nombre/apellido" class="form-control" type="text" name="nombreBusqueda" />
+            }
+            &nbsp;&nbsp;
+            <button class="btn btn-dark" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+
+    }
+    
+
+
+    
+
+    <hr class="text-dark">
+
+
+
+    @if (@ViewBag.Clientes != null && @ViewBag.Clientes.Count > 0)
+    {
+        <table class="text-center table table-bordered table-striped table-hover">
+            <tr>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">#</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">Cliente</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">Email</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">N° Pedidos</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">N° Pagos</th>
+                <th style="background-color: rgb(47 47 47);color:white" class="align-middle">Acciones</th>
+            </tr>
+
+            @foreach (var cliente in ViewBag.Clientes)
+            {
+                <tr>
+                    <td class="align-middle">@cliente.Id_usuario</td>
+                    <td class="align-middle">@cliente.Nombres&nbsp;@cliente.Apellidos</td>
+                    <td class="align-middle">@cliente.Email</td>
+                    <td class="align-middle">@cliente.CantidadPedidos</td>
+                    <td class="align-middle">@cliente.CantidadPagos</td>
+                    <td>
+                        @using (Html.BeginForm("BuscarPedidos", "Pedidos", FormMethod.Post))
+                        {
+                            <div>
+                                <input hidden value="@cliente.Id_usuario" class="form-control" type="text" name="nombreBusqueda"/>
+                                <button class="btn btn-dark d-block mx-auto" type="submit">
+                                    Ver pedidos
+                                </button>
+                            </div>
+
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p class="text-dark">No se encontraron resultados.</p>
+        <a asp-action="ListarClientes" asp-controller="Cliente" class="btn btn-dark">Ver todos los clientes</a>
+    }
+
+</div>

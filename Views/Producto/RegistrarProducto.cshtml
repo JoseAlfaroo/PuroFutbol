@@ -1,0 +1,80 @@
+﻿@model Ecommerce_2024_1_NJD.Models.Producto
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+@{
+    ViewData["Title"] = "Registrar Producto";
+}
+
+
+<h3 class="text-center py-3 text-light" style="background-color: rgb(47 47 47);">
+    <span class="material-icons-outlined">inventory_2</span>&nbsp;Productos
+</h3>
+
+<div class="w-95 mx-auto">
+    <p>
+        <a asp-action="ListarProductos" class="btn btn-dark">Volver a listado</a>
+    </p>
+</div>
+
+<div class="w-95 mx-auto">
+    <hr class="text-dark">
+</div>
+
+
+<div class="w-95 mx-auto">
+    <form id="formRegistrarProducto" class="text-dark" asp-action="RegistrarProducto" method="post" enctype="multipart/form-data">
+        <div class="form-group mb-4">
+            <label asp-for="Nombre" class="control-label fw-bold">Ingrese el nombre del producto</label>
+            <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-4">
+            <label asp-for="IdCategoria" class="control-label fw-bold">Seleccione una categoría</label>
+            <select asp-for="IdCategoria" class="form-select" asp-items="@((SelectList)ViewData["Categorias"])"></select>
+            <span asp-validation-for="IdCategoria" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Precio" class="control-label fw-bold">Indicar precio del producto</label>
+            <input asp-for="Precio" class="form-control" />
+            <span asp-validation-for="Precio" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-4">
+            <label asp-for="Stock" class="control-label fw-bold">Señalar el stock</label>
+            <input type="number" asp-for="Stock" class="form-control" />
+            <span asp-validation-for="Stock" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-4">
+            <label asp-for="Imagen" class="control-label fw-bold">Suba imagen del producto</label>
+            <input type="file" name="Imagen" class="form-control" accept="image/*" />
+            <span asp-validation-for="Imagen" class="text-danger"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary fw-bold">Registrar</button>
+        </div>
+        <br />
+    </form>
+</div>
+
+<script>
+    // Selecciona el elemento input con el id "precio"
+    var precioInput = document.getElementById('Precio');
+
+    // Agrega un event listener para el evento de entrada
+    precioInput.addEventListener('input', function () {
+        // Obtén el valor actual del input
+        var valor = precioInput.value;
+
+        // Expresión regular para validar el formato de precio
+        var regex = /^\d+(,\d*)?$/;
+
+        // Verifica si el valor coincide con la expresión regular
+        if (!regex.test(valor)) {
+            // Si no coincide, borra la última entrada
+            precioInput.value = valor.slice(0, -1);
+        }
+    });
+</script>

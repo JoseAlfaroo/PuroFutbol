@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "_LayoutDashboard";
+}
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<style>
+    .card{
+        padding: 16px;
+    }
+</style>
+
+<div>
+    <h3 class="text-center py-3 text-light mb-0" style="background-color: rgb(47 47 47);">
+        <span class="material-icons-outlined">dashboard</span>&nbsp;Dashboard
+    </h3>
+</div>
+
+<div id="div-dashboard" class="py-3">
+
+    <style>
+        .loader {
+            border: 8px solid #535353;
+            border-top: 8px solid #5e9bb3;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1500ms linear infinite;
+            margin: calc(30vh) auto;
+        }
+  
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .iframe #dashboard{
+            display:none;
+        }
+
+    </style>
+
+    <script>
+        window.onload = function () {
+            var loader = document.querySelector('.loader');
+            var iframe = document.getElementById('dashboard');
+
+            setTimeout(function () {
+                loader.style.display = 'none'; // Esconder loader
+                iframe.style.display = 'block'; // Mostrar iframe
+            }, 7500);
+        };
+    </script>
+
+    <div class="loader"></div>
+
+    <div class="iframe w-95 mx-auto">
+
+        <iframe id="dashboard" title="Dashboard" width="100%" height="600" src="https://app.powerbi.com/view?r=eyJrIjoiZWNmOGZjNTMtNjA2Yy00NTg5LTgxMDctY2Y5YmVmMTZmYjJhIiwidCI6Ijc1MDRlMzE4LThlMWUtNGQ1NS1iZmZkLTg3NWI0ZGVlODI2MCIsImMiOjR9" frameborder="0" allowFullScreen="true"></iframe>
+
+
+    </div>
+
+</div>
+

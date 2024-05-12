@@ -1,0 +1,175 @@
+﻿@model List<Ecommerce_2024_1_NJD.Models.Pedido>
+
+<!--Pa usar el layout-->
+@{Layout = "_LayoutTienda";}
+
+<!--Pa complementar el titulo en el Layout-->
+@{ViewData["Title"] = "Listado de Pedidos";}
+
+
+
+@if (!string.IsNullOrEmpty(ViewData["IdUsuario"]?.ToString()) && !string.IsNullOrEmpty(ViewData["FullName"]?.ToString()))
+{
+    <style>body{background-color:#EEEEEE}</style>
+
+    <div class="container-table100 text-center">
+
+        <div class="wrap-table100">
+            <h1 class="text-start my-0 text-dark fs-2">Historial de pedidos de @ViewData["FullName"]</h1>
+            <hr class="my-3">
+
+            <div class="table-100">
+                <select id="estadoSelector" class="form-select mb-3 col-6">
+                    <option disabled selected value="">- Filtrar pedidos -</option>
+                    <option value="0">Mostrar todo</option>
+                    <option value="1">Mostrar pedidos pagados</option>
+                    <option value="2">Mostrar pedidos pendientes</option>
+                </select>
+            </div>
+
+            <div class="table100">
+                <table id="tabla1" class="table-striped" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                    <thead>
+                        <tr class="table100-head text-light">
+                            <th class="align-middle">ID Pedido</th>
+                            <th class="align-middle">Estado</th>
+                            <th class="align-middle">Fecha de Registro</th>
+                            <th class="align-middle">DNI del Cliente</th>
+                            <th class="align-middle">Dirección de Destino</th>
+                            <th class="align-middle">Detalles</th> <!-- Nueva columna para el botón Detalles -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pedido in Model)
+                        {
+                            <tr>
+                                <td class="align-middle">@pedido.idPedido</td>
+                                <td class="align-middle fw-bold estado">@pedido.estadoPedido</td>
+                                <td class="align-middle">@pedido.fechaRegistroPedido.ToShortDateString()</td>
+                                <td class="align-middle">@pedido.dniCliente</td>
+                                <td class="align-middle">@pedido.direccionDestino</td>
+                                <td class="align-middle">
+                                    <button type="button" class="btn btn-cyan fw-bold" data-toggle="modal" data-target="#detallesModal-@pedido.idPedido">Ver detalles</button>
+                                </td> <!-- Botón Detalles -->
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @foreach (var pedido in Model)
+    {
+        <!-- Modal para mostrar los detalles del pedido -->
+        <div class="modal modal-lg fade " id="detallesModal-@pedido.idPedido" tabindex="-1" role="dialog" aria-labelledby="detallesModalLabel-@pedido.idPedido" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header text-light" style="background-color:black; border-color:gray">
+                        <h5 class="modal-title fw-bold" id="detallesModalLabel-@pedido.idPedido">Detalles del Pedido #@pedido.idPedido</h5>
+                        <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <table id="tabla2" class="table table-striped table-dark mb-0" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                            <thead>
+                                <tr class="table100-head text-light text-center">
+                                    <th class="align-middle">#</th>
+                                    <th class="align-middle">Producto</th>
+                                    <th class="align-middle">Cantidad</th>
+                                    <th class="align-middle">Total</th>
+                                    <th class="align-middle"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="p-0">
+                                @foreach (var detalle in pedido.detallesPedido)
+                                {
+                                    <tr class="text-center py-3" style="border-color:gray">
+                                        <td class="align-middle">@detalle.idProducto</td>
+                                        <td class="align-middle">@detalle.NombreProducto</td>
+                                        <td class="align-middle">@detalle.cantidad</td>
+                                        <td class="align-middle">S/ @detalle.Precio</td>
+                                        <td class="align-middle">
+                                            <img class="rounded" style="width: 100px; height: 100px;" src="@Url.Action("ObtenerImagen", "Producto", new { id = detalle.idProducto })" alt="Imagen del Producto" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="modal-footer d-block" style="background-color:black; border-color:gray">
+                        <center>
+
+                            @if (pedido.estadoPedido == "Pendiente")
+                            {
+                                <a class="btn btn-success fw-bold" asp-controller="Pago" asp-action="RealizarPago" asp-route-id="@pedido.idPedido">Proceder al pago</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-info fw-bold" asp-controller="Pago" asp-action="RealizarPago" asp-route-id="@pedido.idPedido">Más información</a>
+                            }
+
+                            
+                            <button type="button" class="btn btn-secondary fw-bold" data-dismiss="modal">Cerrar</button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        No se pudo obtener el resultado del inicio de sesión.
+    </div>
+}
+
+
+
+<script>
+    // Pa cuando cambie el valor del select
+    document.getElementById("estadoSelector").addEventListener("change", function () {
+        var selectedValue = this.value; // Valor del select
+        var rows = document.querySelectorAll('#tabla1 tbody tr'); // Obtener las filas
+
+        // Loop through all table rows
+        rows.forEach(function (row) {
+            var celdaEstado = row.querySelector('.estado'); // Obtener la celda que contiene el estado
+            var estado = celdaEstado.textContent.trim(); // Obtener el valor del estado en la celda
+            
+            // Cambiar entre la visibilidad de las filas
+            if (selectedValue === "0" ||
+                (selectedValue === "1" && estado === "Pagado") ||
+                (selectedValue === "2" && estado === "Pendiente")) {
+                row.style.display = "table-row"; // Mostrar filas
+            } else {
+                row.style.display = "none"; // Esconder las filas
+            }
+        });
+    });
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function detallesModal(id) {
+        var modal = document.getElementById("myModal_" + id);
+        modal.style.display = "block";
+    }
+
+    function cerrarModal(id) {
+        var modal = document.getElementById("myModal_" + id);
+        modal.style.display = "none";
+    }
+</script>

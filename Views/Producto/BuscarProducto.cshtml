@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Ecommerce_2024_1_NJD.Models.Producto>
+
+<h1 class="text-center">Listado de Productos</h1>
+
+<p class="text-center">
+    BUSCAR PRODUCTO
+</p>
+<p>
+    <a asp-action="ListarProductos" class="btn btn-primary">IR AL LISTADO</a>
+</p>
+ 
+<form asp-controller="Producto" asp-action="BuscarProducto" method="post">
+    @using (Html.BeginForm())
+    {
+        <div class="input-group mb-3">
+            @Html.TextBox("nombre", "", new { @class = "form-control", placeholder = "Nombre del Producto" })
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+        </div>
+    }
+</form>
+
+ 
+
+@if (!string.IsNullOrEmpty(ViewData["IdUsuario"]?.ToString()) && !string.IsNullOrEmpty(ViewData["FullName"]?.ToString()))
+{
+    <div class="alert alert-info" role="alert">
+        Bienvenido, @ViewData["FullName"]
+    </div>
+
+    <p>ID de Usuario: @ViewData["IdUsuario"]</p>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        No se pudo obtener el resultado del inicio de sesión.
+    </div>
+}
+
+@if (Model != null && Model.Any()) // Verificar si hay productos para mostrar
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-striped" id="productosTable">
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Editar</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var producto in Model)
+                        {
+                            <tr>
+                                <td>@producto.IdProducto</td>
+                                <td>
+                                    <img src="@Url.Action("ObtenerImagen", "Producto", new { id = producto.IdProducto })" alt="Imagen del Producto" style="max-width: 100px; height: auto;" />
+                                </td>
+                                <td>@producto.Nombre</td>
+                                <td>@producto.Precio</td>
+                                <td>@producto.Stock</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editarProductoModal" data-id="@producto.IdProducto" data-nombre="@producto.Nombre" data-precio="@producto.Precio" data-stock="@producto.Stock">Editar</button>
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-danger cambiar-estado" data-id="@producto.IdProducto">@producto.Estado</button>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-center">No se encontraron productos que coincidan con la búsqueda.</p>
+}

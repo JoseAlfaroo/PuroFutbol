@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Tienda</title>
+    <link rel="shortcut icon" href="https://i.ibb.co/bJFrDcD/PUROFUTBOL-FAVICON.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="~/css/tienda.css" asp-append-version="true" />
+
+
+    <style>
+        /* width */
+        ::-webkit-scrollbar {
+        width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+        background: #999999;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: #242424;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+        background: #000000;
+        }
+
+        .bg-maomenooscuro {
+            background-color: #e2e2e2;
+        }
+    </style>
+
+
+</head>
+<body class="@ViewData["BodyBGColor"]">
+
+    <div id="div-nav" class="px-3 bg-light" style="    box-shadow: 0px 8px 10px 0px rgb(0 0 0 / 15%);">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <img style="max-height:52px;" class="mw-100" src="https://i.ibb.co/R2z2yVx/PUROFUTBOL-LOGO-PNG.png">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon navbar-dark"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarSupportedContent">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Portal", "ECommerce")">
+                                <i class="fa fa-shopping-bag"></i>
+                                Portal
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-tags" aria-hidden="true"></i>
+                                Categorías
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item">
+                                    <a class="nav-link" href="@Url.Action("FiltrarPorCategoria", "ECommerce", new { idCategoria = 1000 })">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;
+                                        Futbol
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a class="nav-link" href="@Url.Action("FiltrarPorCategoria", "ECommerce", new { idCategoria = 1001 })">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;
+                                        Running
+                                    </a>
+                                </li>
+                                <li class="dropdown-item">
+                                    <a class="nav-link" href="@Url.Action("FiltrarPorCategoria", "ECommerce", new { idCategoria = 1002 })">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;
+                                        Gimnasio
+                                    </a>
+                                </li>
+
+                                <li class="dropdown-item">
+                                    <a class="nav-link" href="@Url.Action("FiltrarPorCategoria", "ECommerce", new { idCategoria = 1003 })">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;
+                                        Calzado
+                                    </a>
+                                </li>
+
+                                <li class="dropdown-item">
+                                    <a class="nav-link" href="@Url.Action("FiltrarPorCategoria", "ECommerce", new { idCategoria = 1004 })">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;
+                                        Hombres
+                                    </a>
+                                </li>
+
+                                <li class="dropdown-item">
+                                    <a class="nav-link" href="@Url.Action("FiltrarPorCategoria", "ECommerce", new { idCategoria = 1005 })">
+                                        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;
+                                        Mujeres
+                                    </a>
+                                </li>
+
+                                <!--
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                -->
+                            </ul>
+                        </li>
+
+                    </ul>
+                    
+                    <form class="d-flex" role="search" method="get" action="@Url.Action("BuscarProductoPorNombre", "ECommerce")">
+                        <input value="@ViewBag.Busqueda" class="form-control me-2" name="nombreProducto" type="search" placeholder="Buscar" aria-label="Search">
+                        <button class="btn btn-dark" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
+
+                    @if (!string.IsNullOrEmpty(ViewData["IdUsuario"]?.ToString()) && !string.IsNullOrEmpty(ViewData["FullName"]?.ToString()))
+                    {
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-action="Resumen" asp-controller="ECommerce">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    Carrito (@(ViewData["CantidadProdCr"] ?? "0"))
+                                </a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                    @ViewData["FullName"]
+                                </a>
+
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item">
+                                        <a class="nav-link" asp-action="ListadoPedidosxUsuario" asp-controller="Pedidos">
+                                            <i class="fa fa-list"></i>&nbsp;
+                                            Mis pedidos
+                                        </a>
+                                    </li>
+                                    <li class="dropdown-item">
+                                        <a class="nav-link" asp-action="Logout" asp-controller="Usuario">
+                                            <i class="fa fa-sign-out"></i>&nbsp;
+                                            Cerrar sesión
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-action="LoginPage" asp-controller="Usuario">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    Carrito (0)
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-action="LoginPage" asp-controller="Usuario">
+                                    <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                    Iniciar sesión
+                                </a>
+                            </li>
+                        </ul>
+                    }
+
+
+
+                </div>
+            </div>
+        </nav>
+    </div>
+
+	@RenderBody()
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /*:::::Pie de Pagina*/
+        .pie-pagina{
+            width: 100%;
+            background-color: #0a141d;
+        }
+        .pie-pagina .grupo-1{
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap:50px;
+            padding: 45px 0px;
+        }
+        .pie-pagina .grupo-1 .box figure{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pie-pagina .grupo-1 .box figure img{
+            width: 250px;
+        }
+        .pie-pagina .grupo-1 .box h2{
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 20px;
+        }
+        .pie-pagina .grupo-1 .box p{
+            color: #efefef;
+            margin-bottom: 10px;
+        }
+        .pie-pagina .grupo-1 .red-social a{
+            display: inline-block;
+            text-decoration: none;
+            width: 45px;
+            height: 45px;
+            line-height: 45px;
+            color: #fff;
+            margin-right: 10px;
+            background-color: #0e0e2d;
+            text-align: center;
+            transition: all 300ms ease;
+        }
+        .pie-pagina .grupo-1 .red-social a:hover{
+            color: aqua;
+        }
+        .pie-pagina .grupo-2{
+            background-color: #0e0e2d;
+            padding: 15px 10px;
+            text-align: center;
+            color: #fff;
+        }
+        .pie-pagina .grupo-2 small{
+            font-size: 15px;
+        }
+        @@media screen and (max-width:800px){
+            .pie-pagina .grupo-1{
+                width: 90%;
+                grid-template-columns: repeat(1, 1fr);
+                grid-gap:30px;
+                padding: 35px 0px;
+            }
+        }
+    </style>
+
+    @if (@ViewData["Footer"] == "Si")
+    {
+        <footer class="pie-pagina">
+            <div class="grupo-1">
+                <div class="box">
+                    <figure>
+                        <a asp-action="Index" asp-controller="Home">
+                            <img style="filter: brightness(100)" src="https://i.ibb.co/R2z2yVx/PUROFUTBOL-LOGO-PNG.png" alt="PuroFutbol LOGO">
+                        </a>
+                    </figure>
+                </div>
+                <div class="box">
+                    <h2>BIENVENIDO</h2>
+                    <p>Descubre diversos artículos deportivos en nuestro catálogo online.</p>
+                    <p>Y síguenos para obtener acceso exclusivo a promociones y descuentos especiales.</p>
+                </div>
+                <div class="box">
+                    <h2>SIGUENOS</h2>
+                    <div class="red-social">
+                        <a href="#" class="fa fa-facebook"></a>
+                        <a href="#" class="fa fa-instagram"></a>
+                        <a href="#" class="fa fa-twitter"></a>
+                        <a href="#" class="fa fa-youtube"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="grupo-2">
+                <small>&copy; @DateTime.Now.Year <b>PuroFutbol</b> - Todos los Derechos Reservados.</small>
+            </div>
+        </footer>
+    }
+
+
+</body>
+</html>

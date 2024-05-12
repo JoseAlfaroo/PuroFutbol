@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "_LayoutTienda";
+}
+
+@{
+    ViewData["Title"] = "Pendiente de aprobación";
+}
+
+@{
+    ViewData["BodyBGColor"] = "bg-pendiente";
+}
+
+
+
+
+<style>
+    .bg-pendiente{
+        background-color: #080c27;
+    }
+    #div-nav{
+        display:none
+    }
+</style>
+
+<div>
+    <div style="height:100vh; min-height: 340px">
+        <div style="max-width: 500px; width: 90%; background-color: white; box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);position: relative;top: 50%;transform: translateY(-50%);" class="mx-auto p-3 rounded">
+            <form method="post" action="LoginPage">
+                <div class="d-flex justify-content-between px-2">
+                    <img class="mx-auto" src="https://i.ibb.co/R2z2yVx/PUROFUTBOL-LOGO-PNG.png" style="width: 65%; max-width: 300px; filter: brightness(0);">
+                </div>
+                <hr style="color:black; opacity: .45" class="my-3" />
+
+                <div>
+                    <p>Su solicitud aún no ha sido aprobada, cuando reciba los permisos, se le notificará mediante un correo.</p>
+                </div>
+
+
+                <div class="form-group text-dark mb-2 mx-auto">
+                    <hr style="color:black; opacity: .45">
+                    <div class="text-center">
+                        <a class="btn btn-dark fw-bold" asp-action="Logout" asp-controller="Usuario">Cerrar sesión</a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
