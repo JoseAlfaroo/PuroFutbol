@@ -3,6 +3,9 @@ using Ecommerce_2024_1_NJD.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Agregar JSON a config
+builder.Configuration.AddJsonFile("emailSettings.json", optional: false, reloadOnChange: true);
+
 // Correoselo :v
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 

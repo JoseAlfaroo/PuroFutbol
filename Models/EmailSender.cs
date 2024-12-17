@@ -1,35 +1,40 @@
 ﻿using Ecommerce_2024_1_NJD.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Ecommerce_2024_1_NJD.Models
 {
     public class EmailSender : IEmailSender
     {
-        public Task SendEmailAsync(string email, string subject, string message, bool isHtml = false)
+        private readonly IConfiguration _configuration;
+
+        public EmailSender(IConfiguration configuration)
         {
-            // Outlook (Establecer correo o correos aquí)
-            string[] mails = { "purofutboloficial@outlook.com", "purofutboloficial1@outlook.com", "purofutboloficial2@outlook.com", "purofutboloficial3@outlook.com", "purofutboloficial4@outlook.com", "purofutboloficial5@outlook.com" };
+            _configuration = configuration;
+        }
 
-            var rnd = new Random();
+        public async Task SendEmailAsync(string email, string subject, string message, bool isHtml = false)
+        {
+            // leer config de JSON
+            var smtpConfig = _configuration.GetSection("Smtp");
 
-            // Agarra un mail random
-            var mail = mails[rnd.Next(mails.Length)];
+            string smtpHost = smtpConfig["Host"];
+            int smtpPort = int.Parse(smtpConfig["Port"]);
+            string smtpUser = smtpConfig["User"];
+            string smtpPassword = smtpConfig["Password"];
 
-            //Establecer contraseña (En este caso es lo mismo para todos los correos)
-            var pw = "E102Gamma";
-
-            var client = new SmtpClient("smtp-mail.outlook.com", 587)
+            var client = new SmtpClient(smtpHost, smtpPort)
             {
                 EnableSsl = true,
-                Credentials = new NetworkCredential(mail, pw)
+                Credentials = new NetworkCredential(smtpUser, smtpPassword)
             };
 
-            var mailMessage = new MailMessage(from: mail, to: email, subject, message);
+            var mailMessage = new MailMessage(from: smtpUser, to: email, subject, message);
             mailMessage.IsBodyHtml = isHtml;
 
-            return client.SendMailAsync(mailMessage);
-
+            await client.SendMailAsync(mailMessage);
         }
     }
 }

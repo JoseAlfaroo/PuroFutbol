@@ -1,3 +1,10 @@
+-- Cambiar a "Master" y eliminar DB si existe
+Use Master;
+Go
+
+Drop Database If Exists BDPROYECTODSW1;
+Go
+
 CREATE DATABASE BDPROYECTODSW1
 GO
 
@@ -15,14 +22,6 @@ CREATE TABLE Usuarios(
   Rol varchar(20) not null,
   email varchar (50) UNIQUE,
 )
-GO
-
-
-
-
-
---CREAR SP PARA EL REGISTRO DE USUARIOS--
-DROP PROC IF EXISTS Sp_RegistrarUsuario
 GO
 
 CREATE OR ALTER PROCEDURE Sp_RegistrarUsuario
@@ -64,9 +63,6 @@ BEGIN
 END
 GO
 
-
-
-
 -- Crear la tabla Categoria
 CREATE TABLE Categoria (
     idCategoria INT IDENTITY(1000,1) PRIMARY KEY,
@@ -74,8 +70,6 @@ CREATE TABLE Categoria (
     Descripcion NVARCHAR(MAX)
 );
 GO
-
-
 
 
 -- Crear la tabla Producto
@@ -92,8 +86,6 @@ CREATE TABLE Producto (
 GO
 
 
-
-
 -- Crear la tabla Pedido
 CREATE TABLE Pedido (
     idPedido INT PRIMARY KEY,
@@ -106,8 +98,6 @@ CREATE TABLE Pedido (
 GO
 
 
-
-
 -- Crear la tabla DetallesPedido
 CREATE TABLE DetallesPedido (
     idPedido INT REFERENCES Pedido,
@@ -117,11 +107,6 @@ CREATE TABLE DetallesPedido (
 );
 GO
 
-
-
---Sp para registrar productos por categoria---
-DROP PROCEDURE IF EXISTS Sp_RegistrarProducto;
-GO
 
 CREATE PROCEDURE Sp_RegistrarProducto
     @NombreProducto NVARCHAR(100),
@@ -149,13 +134,7 @@ GO
 
 
 
--------------------SP PARA STOCK---------------------------
---AUTOGENERAR PEDIDO X¨??*//$$
-
-DROP FUNCTION IF EXISTS dbo.autogenera
-GO
-
-create or alter function dbo.autogenera() returns int
+Create Or Alter Function dbo.autogenera() returns int
 As
 Begin 
     Declare @n int=(Select top 1 idProducto from Producto order by 1 desc)
@@ -166,13 +145,9 @@ Begin
 
     return @n
 End
-go
+Go
 
 
-
----------------------
-DROP PROC IF EXISTS usp_agrega_pedido
-GO
 
 CREATE OR ALTER PROCEDURE usp_agrega_pedido
     @idpedido INT OUTPUT,
@@ -202,11 +177,7 @@ GO
 
 
 
------------------------------------
-DROP PROC IF EXISTS usp_agrega_detalle
-GO
-
-create or alter procedure usp_agrega_detalle
+Create Or Alter Procedure usp_agrega_detalle
 @idPedido int,
 @idProducto decimal,
 @Cantidad int,
@@ -216,10 +187,6 @@ Insert DetallesPedido Values(@idPedido,@idProducto,@Cantidad,@Precio)
 go
 
 
-
-------------------------------------------
-DROP PROC IF EXISTS usp_actualiza_stock
-GO
 create or alter proc usp_actualiza_stock
 @idproducto int,
 @cant smallint
@@ -230,14 +197,7 @@ As
 go
 
 
-
-
-
---LOGIN FINAL--
-DROP PROC IF EXISTS SP_LOGINV2
-GO
-
---CREATE SP INICIAR SESSION Y RECUPERAR USUARIOS--
+--CREATE SP INICIAR SESION Y RECUPERAR USUARIOS--
 CREATE OR ALTER PROCEDURE SP_LOGINV2
     @UserNameOrEmail VARCHAR(50),
     @Password VARCHAR(20)
@@ -285,17 +245,14 @@ BEGIN
         SELECT 'CREDENCIALES INCORRECTAS. INGRESA DE NUEVO LA CONTRASEÑA' AS Resultado,
                NULL AS id_usuario; -- Devolver NULL para el ID del usuario
     END
-END;
-
+END
+Go
 
 
 
 
 --SP PARA VER SI SE OBTIENE LA IMAGEN POR ID- CONCATENAR IMAGEN-
 --SE PUEDE UTILIZAR EN TODO EL PROYECTO EL SP--
-
-DROP PROC IF EXISTS Sp_ObtenerImagenProducto
-GO
 
 CREATE OR ALTER  PROCEDURE Sp_ObtenerImagenProducto
     @IdProducto INT
@@ -308,7 +265,7 @@ BEGIN
     FROM Producto
     WHERE idProducto = @IdProducto;
 END
-
+Go
 
 
 
@@ -317,9 +274,6 @@ END
 --ES DECIR QUE PODRA HACER LA OPERACION CRUD
 --EN POCAS PALABRAS PUES MODIFICAR LOS PRODUCTOS, EDITARLOS Y MAS COSAS SI...
 --APLICAR CONCEPTO DE LA ABSTRACCION--
-DROP PROC IF EXISTS SP_ActualizarProducto
-GO
-
 CREATE OR ALTER PROCEDURE SP_ActualizarProducto
     @idProducto INT,
     @NombreProducto NVARCHAR(100) = NULL,
@@ -338,17 +292,11 @@ BEGIN
         FechaRegistro = GETDATE(), -- Actualizar la fecha de registro automáticamente
 		idCategoria = ISNULL(@idCategoria, idCategoria)
     WHERE idProducto = @idProducto;
-END;
+END
 GO
-
-
-
 
 
 ---SP ESTADO PRODUCTO--
-DROP PROC IF EXISTS SP_EstadoProducto
-GO
-
 CREATE PROCEDURE SP_EstadoProducto
     @idProducto INT
 AS
@@ -360,29 +308,17 @@ END;
 GO
 
 
-
-
-
-
 --LISTAR PRODUCTOS--
-DROP PROC IF EXISTS SP_ListarProductos
-GO
-
 CREATE OR ALTER PROCEDURE SP_ListarProductos
 AS
 BEGIN
     SELECT idProducto, NombreProducto, Imagen, Precio, Stock, FechaRegistro, Estado, Categoria.idCategoria, Categoria.NombreCategoria 
     FROM Producto Join Categoria
 	ON Producto.idCategoria = Categoria.idCategoria
-END;
+END
 GO
-
-
-
 
 ---SP PARA BUSCAR PRODUCTOS--
-DROP PROC IF EXISTS SpBuscarProductosNombre
-GO
 CREATE PROCEDURE SpBuscarProductosNombre
     @Nombre NVARCHAR(100)
 AS
@@ -393,12 +329,7 @@ BEGIN
 END;
 GO
 
-
-
 ------------------------------------------------------------------------------
-DROP PROC IF EXISTS ListarPedidosPorUsuario
-go
-
 CREATE PROCEDURE ListarPedidosPorUsuario
     @idUsuario INT
 AS
@@ -415,11 +346,7 @@ EXEC ListarPedidosPorUsuario @idUsuario = '1003'
 SELECT * FROM Pedido
 go
 
-
-
 ----------------------------------------------
-DROP PROC IF EXISTS ObtenerDetallesPedidoPorId
-GO
 
 CREATE OR ALTER PROCEDURE ObtenerDetallesPedidoPorId
     @idPedido INT
@@ -432,15 +359,10 @@ BEGIN
     INNER JOIN Producto p ON dp.idProducto = p.idProducto
     WHERE dp.idPedido = @idPedido;
 END
-
-
-
+Go
 
 --SP PARA BUSCAR PRODUCTOS POR NOMBRE--
 --PARA CLIENTES
-DROP PROC IF EXISTS SpBuscarProductoPorNombre
-GO
-
 CREATE OR ALTER PROCEDURE SpBuscarProductoPorNombre
     @nombreProducto NVARCHAR(100)
 AS
@@ -453,18 +375,10 @@ BEGIN
     INNER JOIN Categoria c ON p.IdCategoria = c.IdCategoria
     WHERE p.NombreProducto LIKE '%' + @nombreProducto + '%' AND p.Estado = 'Disponible';
 END
-
-
-
-
-
+Go
 
 --------SP PARA FILTRAR PRODUCTOS POR CATEGORIA--- 
 --TENIENDO EN CUENTA QUE NECESITAREMOS EL  @nombreProducto , PERO ESTE SE MANEJARA COMO NULO Y ALMACENARA EN (Portal)
-
-DROP PROC IF EXISTS SpFiltradoProdCate
-go
-
 CREATE OR ALTER PROCEDURE SpFiltradoProdCate
     @nombreProducto NVARCHAR(100) = NULL,
     @idCategoria INT = NULL
@@ -478,10 +392,7 @@ BEGIN
     WHERE (@nombreProducto IS NULL OR p.NombreProducto LIKE '%' + @nombreProducto + '%')
     AND (@idCategoria IS NULL OR p.idCategoria = @idCategoria) AND p.Estado = 'Disponible';
 END
------------------------------------------
-DROP PROC IF EXISTS SpListadoCategorias
-go
-
+Go
 
 
 CREATE OR ALTER PROCEDURE SpListadoCategorias
@@ -496,9 +407,6 @@ GO
 
 
 ---PARA EDITAR CATEGORIAS----
-DROP PROC IF EXISTS SpActualizarCategorias
-go
-
 CREATE OR ALTER PROCEDURE SpActualizarCategorias
     @idCategoria INT,
     @nombreCategoria NVARCHAR(100) = NULL,
@@ -515,14 +423,7 @@ BEGIN
 END;
 GO
 
-
-
-
 --------SP PARA REGISTRAR CATEGORIAS---------------
-DROP PROC IF EXISTS SPRegistrarCategoria
-go
-
-
 CREATE PROCEDURE SPRegistrarCategoria
     @NombreCategoria NVARCHAR(100),
     @Descripcion NVARCHAR(MAX)
@@ -535,9 +436,25 @@ BEGIN
 
     SELECT SCOPE_IDENTITY() AS IdCategoria; -- Retorna el ID de la categoría recién creada
 END
+Go
 
+Exec SPRegistrarCategoria 'Futbol', 'Descripción fútbol' 
+Go
 
+Exec SPRegistrarCategoria 'Running', 'Descripción running'
+Go
 
+Exec SPRegistrarCategoria 'Gimnasio', 'Descripción gimnasio'
+Go
+
+Exec SPRegistrarCategoria 'Calzado', 'Descripción calzado'
+Go
+
+Exec SPRegistrarCategoria 'Hombres', 'Descripción hombres'
+Go
+
+Exec SPRegistrarCategoria 'Mujeres', 'Descripción mujeres'
+Go
 
 ----------------------------------------------------------------------------
 
@@ -550,13 +467,7 @@ CREATE TABLE Pago (
 GO
 
 
-
-
 ---VER DATOS DEL PEDIDO---
-
-DROP PROC IF EXISTS SP_DATOSPEDIDO
-go
-
 CREATE OR ALTER PROCEDURE SP_DATOSPEDIDO
      @idPedido INT
 AS
@@ -571,14 +482,7 @@ END
 GO
 
 
-
-
 ---REGISTRAR PAGO---
-
-DROP PROC IF EXISTS SpRegitrarPago
-go
-
-
 CREATE OR ALTER PROCEDURE SpRegitrarPago
     @idPedido INT,
     @metodoPago VARCHAR(20)
@@ -604,14 +508,7 @@ BEGIN
 END
 GO
 
-
-
-
 ---------------------------------------------------
-
-DROP PROC IF EXISTS RecoverIdPedidoxIdU
-go
-
 CREATE OR ALTER PROCEDURE RecoverIdPedidoxIdU
     @idUsuario INT
 AS
@@ -623,12 +520,7 @@ BEGIN
 END
 GO
 
-
-
 -----------------------------------------
-DROP PROC IF EXISTS ListarPedidosPorUsuarioIdPedido
-GO
-
 CREATE OR ALTER PROCEDURE ListarPedidosPorUsuarioIdPedido
     @idUsuario INT
 AS
@@ -646,17 +538,13 @@ GO
 SELECT * FROM Producto;
 SELECT * FROM DetallesPedido;
 SELECT * FROM Pedido;
-SELECT* FROM Pago
+SELECT * FROM Pago
 GO
 
 
 
 
 --SP PARA TENER EL PEDIDO Y DATOS DE PAGO
-
-DROP PROC IF EXISTS SP_PEDIDOSYPAGOS
-GO
-
 CREATE OR ALTER PROC SP_PEDIDOSYPAGOS
 @IdPedido INT = NULL
 AS
@@ -668,14 +556,7 @@ GO
 
 
 
-
-
-
-
--------------- ESTE ES EL SP TOP 5 VENDIDOS
-DROP PROC IF EXISTS SP_TOPMASVENDIDOS
-GO
-
+-- ESTE ES EL SP TOP 5 VENDIDOS
 CREATE OR ALTER PROC SP_TOPMASVENDIDOS
 AS
 BEGIN
@@ -690,9 +571,6 @@ END
 GO
 
 ------------SP CONTEOS DASHBOARD
-DROP PROC IF EXISTS SP_CONTEOSDASHBOARD
-GO
-
 CREATE OR ALTER PROC SP_CONTEOSDASHBOARD
 AS
 BEGIN
@@ -704,12 +582,7 @@ BEGIN
 END
 GO
 
-
-
 ------ LIstado de pedidos para dashboard -------
-DROP PROC IF EXISTS SP_ListarPedidos
-GO
-
 CREATE OR ALTER PROC SP_ListarPedidos
 @NombreBusqueda NVARCHAR(100) = NULL
 AS
@@ -753,12 +626,7 @@ END
 GO
 
 
-
-
 ------ LIstado de Clientes para dashboard -------
-DROP PROC IF EXISTS SP_ListarClientes
-GO
-
 CREATE OR ALTER PROC SP_ListarCLientes
 @NombreBusqueda NVARCHAR(100) = NULL
 AS
@@ -790,10 +658,6 @@ GO
 
 /******* Probando (21/04/2024) ********/
 --------- SOLICITUD ROL ADMIN
-
-DROP TABLE SOLICITUD_ADMIN
-GO
-
 CREATE TABLE SOLICITUD_ADMIN(
 	IdSolicitud INT IDENTITY(5000,1),
 	id_usuario int references Usuarios UNIQUE,
@@ -804,13 +668,7 @@ CREATE TABLE SOLICITUD_ADMIN(
 GO
 
 
-
-
 /*** SP PARA SOLICITAR PERMISOS TRAS REGISTRO ***/
-DROP PROC IF EXISTS SP_RegistroYSolicitudAdmin
-GO
-
-
 CREATE OR ALTER PROCEDURE SP_RegistroYSolicitudAdmin
    @username varchar(50),
    @pass varchar(20),
@@ -858,10 +716,6 @@ GO
 
 
 /*** SP PARA LISTAR SOLICITUDES/USUARIOS ***/
-
-DROP PROC IF EXISTS SP_ListarSolicitantes
-GO
-
 CREATE OR ALTER PROCEDURE SP_ListarSolicitantes
 AS
 BEGIN
@@ -876,9 +730,6 @@ GO
 
 /******** Verificar sesión ********/
 -- Verifica sesión y agrega usuario solicitante como moderador --
-DROP PROC IF EXISTS SP_AGREGARADMINISTRADOR
-GO
-
 CREATE OR ALTER PROCEDURE SP_AGREGARADMINISTRADOR
 @IdUsuario INT,
 @Password VARCHAR(20),
@@ -923,11 +774,6 @@ GO
 
 
 /*********** BUSCAR USU POR EMAIL ************/
-DROP PROC IF EXISTS RecuperarContraseña
-GO
-
-
-
 CREATE OR ALTER PROC RecuperarContraseña
     @Email NVARCHAR(100)
 AS
@@ -941,9 +787,6 @@ GO
 
 
 /***** Cambiar Contraseña *****/
-DROP PROC IF EXISTS CambiarContraseña
-GO
-
 CREATE OR ALTER PROC CambiarContraseña
     @UsuarioID Varchar(10),
 	@Email Varchar(100),
