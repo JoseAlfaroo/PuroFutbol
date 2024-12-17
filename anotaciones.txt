@@ -1,0 +1,10 @@
+Estructura del JSON para correos "emailSettings.json"
+
+{
+  "Smtp": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "User": "direcciondecorreo@gmail.com",
+    "Password": "contraseña de aplicacion"
+  }
+}
